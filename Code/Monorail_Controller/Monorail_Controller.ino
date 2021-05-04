@@ -10,8 +10,8 @@ int stepper2endstop = 35;
 int stepper3endstop = 36;
 
 const int STEPPER_SHIFT_ANGLE = 70; //this is the angle that the stepper mount is shifted by for vertical movement
-const int DEFAULT_SPEED = 200;
-const int DEFAULT_ACCEL = 100;
+const int MAX_SPEED = 200;
+const int MAX_ACCEL = 100;
 const float MM_TO_STEP_RATIO = 5;
 const int ZERO_SPEED = 100; //how quickly should we zero the robot for initial position reset
 const int PROGRAM_LINE_COUNT = 100; //whats the maximum ammount of lines the program can be
@@ -19,16 +19,38 @@ String programList[PROGRAM_LINE_COUNT]; //maximum of 100 commands (changeable of
 int lastArrayPoint = 0; //used to know where we are in the listed program
 int programCounter = 0; //used to count what line we are on in the program
 
-void setMotionSpeed(int speed = DEFAULT_SPEED);
-void setMotionAccel(int accel = DEFAULT_ACCEL);
+void setMotionSpeed(int speed = MAX_SPEED);
+void setMotionAccel(int accel = MAX_ACCEL);
 
-//modify this to add motion moves to the robot
+/*
+modify this to add motion moves to the robot
+Comments are available using #. Comments REQUIRE ;\ still as im lazy ;)
+
+List of available commands:
+move(x,y,z) |Moves the robot EOAT to the specified X Y Z coordinates|
+delay(ms)   |Halts program execution for a specified ammount of milliseconds|
+speed(%)    |Sets the speed of the robot based on a percentage of the max speed. This change affects all motion moves after it is called|
+accel(%)    |Sets the acceleration of the robot based on a percentage of the max acceleration. This change affects all motion moves after it is called|
+*/
 String program = "\
+#basic starting program for testing;\
 move(100,200,300);\
 delay(3000);\
 move(0,50,25);\
 move(300,0,5);\
 move(100,200,300);\
+move(0,0,0);\
+delay(1000);\
+#Section to test speed command;\
+speed(20);\
+move(100,200,300);\
+speed();\
+move(0,0,0);\
+#Section to test accel command;\
+delay(1000);\
+accel(5);\
+move(100,200,300);\
+accel();\
 move(0,0,0);\
 ";
 
@@ -43,6 +65,13 @@ void splitProgram(){
 
 //This takes a single line command and figures out what it means and where to send input values, if any
 void parseCommand(String command){
+  //Comment Handling
+  if(command.indexOf("#") != -1){
+    //do nothing :)
+    return;
+  }
+
+  //Motion Commands
   if(command.indexOf("move") != -1){
     //Serial.println(command);
     String valueset = command.substring(command.indexOf("(") + 1, command.indexOf(')'));
@@ -51,7 +80,24 @@ void parseCommand(String command){
     int z = command.substring(command.indexOf(",",command.indexOf(",", command.indexOf(",")) + 1) + 1, command.indexOf(')')).toInt();
     moveToCoordinates(x,y,z);
   }
-  
+  if(command.indexOf("speed") != -1){
+    //Serial.println(command);
+    setMotionSpeed((command.substring(command.indexOf("(") + 1, command.indexOf(')')).toInt() / 100.0) * MAX_SPEED); //find the value in the command, then divide it by 100 and multiply it by MAX_SPEED
+  }
+  if(command.indexOf("speed()") != -1){
+    //Serial.println(command);
+    setMotionSpeed(MAX_SPEED); //Reset motion speed to max
+  }
+  if(command.indexOf("accel") != -1){
+    //Serial.println(command);
+    setMotionAccel((command.substring(command.indexOf("(") + 1, command.indexOf(')')).toInt() / 100.0) * MAX_ACCEL); //find the value in the command, then divide it by 100 and multiply it by MAX_ACCEL
+  }
+  if(command.indexOf("accel()") != -1){
+    //Serial.println(command);
+    setMotionAccel(MAX_ACCEL); //Reset motion accel to max
+  }
+
+  //Time Commands
   if(command.indexOf("delay") != -1){
     //Serial.println(command);
     delay(command.substring(command.indexOf("(") + 1, command.indexOf(')')).toInt());
