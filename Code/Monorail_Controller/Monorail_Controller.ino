@@ -18,7 +18,7 @@ int stepper3endstop = 36;
 const int STEPPER_SHIFT_ANGLE = 70; //this is the angle that the stepper mount is shifted by for vertical movement
 const int MAX_SPEED = 200;
 const int MAX_ACCEL = 100;
-const float MM_TO_STEP_RATIO = 62.99;
+const float MM_TO_STEP_RATIO = 4;
 const int ZERO_SPEED = 100; //how quickly should we zero the robot for initial position reset
 const int PROGRAM_LINE_COUNT = 100; //whats the maximum ammount of lines the program can be
 String programList[PROGRAM_LINE_COUNT]; //maximum of 100 commands (changeable ofc, dynamic arrays arent a thing I wanted to implement here)
@@ -151,9 +151,9 @@ void moveToCoordinates(float x, float y, float z){
   //y = y + 180;
   //z = 580 - z;
   
-  stepper1.moveTo((x - z) * MM_TO_STEP_RATIO);
-  stepper2.moveTo((x - (y * tan(90 - STEPPER_SHIFT_ANGLE))) * MM_TO_STEP_RATIO);
-  stepper3.moveTo((x + z) * MM_TO_STEP_RATIO);
+  stepper1.moveTo((x - z) / MM_TO_STEP_RATIO);
+  stepper2.moveTo((x - (y * tan(90 - STEPPER_SHIFT_ANGLE))) / MM_TO_STEP_RATIO);
+  stepper3.moveTo((x + z) / MM_TO_STEP_RATIO);
 }
 
 void setMotionSpeed(int speed){
