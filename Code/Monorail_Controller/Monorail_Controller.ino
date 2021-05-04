@@ -1,3 +1,9 @@
+/*-------------------------------------------------------------
+                Project by Matthew Herber
+                Concept by Nicholas Seward
+-------------------------------------------------------------*/
+
+//Include the neccesary librarys
 #include <AccelStepper.h>
 
 // Define some steppers and the pins the will use
@@ -24,7 +30,7 @@ void setMotionAccel(int accel = MAX_ACCEL);
 
 /*
 modify this to add motion moves to the robot
-Comments are available using #. Comments REQUIRE ;\ still as im lazy ;)
+Comments are available using #. Comments REQUIRE ';\' still as im lazy ;)
 
 List of available commands:
 move(x,y,z) |Moves the robot EOAT to the specified X Y Z coordinates|
