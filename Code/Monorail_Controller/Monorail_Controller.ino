@@ -41,11 +41,13 @@ move(300,0,5);\
 move(100,200,300);\
 move(0,0,0);\
 delay(1000);\
+;\
 #Section to test speed command;\
 speed(20);\
 move(100,200,300);\
 speed();\
 move(0,0,0);\
+;\
 #Section to test accel command;\
 delay(1000);\
 accel(5);\
