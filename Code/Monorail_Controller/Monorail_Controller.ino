@@ -16,16 +16,16 @@ int stepper2endstop = 35;
 int stepper3endstop = 36;
 
 const int STEPPER_SHIFT_ANGLE = 70; //this is the angle that the stepper mount is shifted by for vertical movement
-const int MAX_SPEED = 400;
-const int MAX_ACCEL = 200;
+const int MAX_SPEED = 350;
+const int MAX_ACCEL = MAX_SPEED * 3;
 const float MM_TO_STEP_RATIO = 0.5;
 const int ZERO_SPEED = 100; //how quickly should we zero the robot for initial position reset
 const int PROGRAM_LINE_COUNT = 100; //whats the maximum ammount of lines the program can be
 String programList[PROGRAM_LINE_COUNT]; //maximum of 100 commands (changeable ofc, dynamic arrays arent a thing I wanted to implement here)
 int lastArrayPoint = 0; //used to know where we are in the listed program
 int programCounter = 0; //used to count what line we are on in the program
+float percentSpeed = 1.0f;
 
-void setMotionSpeed(int speed = MAX_SPEED);
 void setMotionAccel(int accel = MAX_ACCEL);
 
 /*
@@ -41,12 +41,12 @@ accel(%)    |Sets the acceleration of the robot based on a percentage of the max
 String program = "\
 #basic starting program for testing;\
 move(100,200,300);\
-delay(3000);\
+#delay(3000);\
 move(0,50,25);\
 move(300,0,5);\
 move(100,200,300);\
 move(0,0,0);\
-delay(1000);\
+#delay(1000);\
 ;\
 #Section to test speed command;\
 speed(20);\
@@ -55,10 +55,24 @@ speed();\
 move(0,0,0);\
 ;\
 #Section to test accel command;\
-delay(1000);\
+#delay(1000);\
 accel(5);\
 move(100,200,300);\
 accel();\
+move(0,0,0);\
+delay(1000);\
+#Rapid section testing individual axis moves;\
+#X;\
+move(100,0,0);\
+delay(1000);\
+move(0,0,0);\
+#Y;\
+move(0,100,0);\
+delay(1000);\
+move(0,0,0);\
+#Z;\
+move(0,0,100);\
+delay(1000);\
 move(0,0,0);\
 ";
 
@@ -78,9 +92,8 @@ void parseCommand(String command){
     //do nothing :)
     return;
   }
-
   //Motion Commands
-  if(command.indexOf("move") != -1){
+  else if(command.indexOf("move") != -1){
     //Serial.println(command);
     String valueset = command.substring(command.indexOf("(") + 1, command.indexOf(')'));
     int x = command.substring(command.indexOf("(") + 1, command.indexOf(',')).toInt();
@@ -88,21 +101,21 @@ void parseCommand(String command){
     int z = command.substring(command.indexOf(",",command.indexOf(",", command.indexOf(",")) + 1) + 1, command.indexOf(')')).toInt();
     moveToCoordinates(x,y,z);
   }
-  if(command.indexOf("speed") != -1){
+  else if(command.indexOf("speed()") != -1){
     //Serial.println(command);
-    setMotionSpeed((command.substring(command.indexOf("(") + 1, command.indexOf(')')).toInt() / 100.0) * MAX_SPEED); //find the value in the command, then divide it by 100 and multiply it by MAX_SPEED
+    percentSpeed = 1.0;
   }
-  if(command.indexOf("speed()") != -1){
+  else if(command.indexOf("speed") != -1){
     //Serial.println(command);
-    setMotionSpeed(MAX_SPEED); //Reset motion speed to max
+    percentSpeed = command.substring(command.indexOf("(") + 1, command.indexOf(')')).toInt() / 100.0;
   }
-  if(command.indexOf("accel") != -1){
-    //Serial.println(command);
-    setMotionAccel((command.substring(command.indexOf("(") + 1, command.indexOf(')')).toInt() / 100.0) * MAX_ACCEL); //find the value in the command, then divide it by 100 and multiply it by MAX_ACCEL
-  }
-  if(command.indexOf("accel()") != -1){
+  else if(command.indexOf("accel()") != -1){
     //Serial.println(command);
     setMotionAccel(MAX_ACCEL); //Reset motion accel to max
+  }
+  else if(command.indexOf("accel") != -1){
+    //Serial.println(command);
+    setMotionAccel((command.substring(command.indexOf("(") + 1, command.indexOf(')')).toInt() / 100.0) * MAX_ACCEL); //find the value in the command, then divide it by 100 and multiply it by MAX_ACCEL
   }
 
   //Time Commands
@@ -117,7 +130,6 @@ void setup()
     pinMode(stepper1endstop, INPUT);
     pinMode(stepper2endstop, INPUT);
     pinMode(stepper3endstop, INPUT);
-    setMotionSpeed();
     setMotionAccel();
     //Serial.begin(9600);
     splitProgram();
@@ -155,12 +167,15 @@ void moveToCoordinates(float x, float y, float z){
   stepper1.moveTo((x - z) / MM_TO_STEP_RATIO);
   stepper2.moveTo((x - (y * tan(90 - STEPPER_SHIFT_ANGLE))) / MM_TO_STEP_RATIO);
   stepper3.moveTo((x + z) / MM_TO_STEP_RATIO);
-}
 
-void setMotionSpeed(int speed){
-  stepper1.setMaxSpeed(speed);
-  stepper2.setMaxSpeed(speed);
-  stepper3.setMaxSpeed(speed);
+  //Times ive tried to figure out what I did here: 1
+  float MaxDistance = max(stepper1.distanceToGo(), stepper3.distanceToGo());
+
+  float VectorMultiplier = 1.0f / MaxDistance;
+
+  stepper1.setMaxSpeed((VectorMultiplier * stepper1.distanceToGo()) * MAX_SPEED * percentSpeed);
+  stepper2.setMaxSpeed((VectorMultiplier * stepper2.distanceToGo()) * MAX_SPEED * percentSpeed);
+  stepper3.setMaxSpeed((VectorMultiplier * stepper3.distanceToGo()) * MAX_SPEED * percentSpeed);
 }
 
 void setMotionAccel(int accel){
