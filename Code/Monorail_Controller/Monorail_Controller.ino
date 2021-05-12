@@ -16,9 +16,9 @@ int stepper2endstop = 35;
 int stepper3endstop = 36;
 
 const int STEPPER_SHIFT_ANGLE = 70; //this is the angle that the stepper mount is shifted by for vertical movement
-const int MAX_SPEED = 200;
+const int MAX_SPEED = 400;
 const int MAX_ACCEL = MAX_SPEED * 3;
-const float MM_TO_STEP_RATIO = 0.5;
+const float MM_TO_STEP_RATIO = -0.25; //This is a negative to reverse the direction of all three steppers easily
 const int ZERO_SPEED = 100; //how quickly should we zero the robot for initial position reset
 const int PROGRAM_LINE_COUNT = 100; //whats the maximum ammount of lines the program can be
 String programList[PROGRAM_LINE_COUNT]; //maximum of 100 commands (changeable ofc, dynamic arrays arent a thing I wanted to implement here)
@@ -40,40 +40,40 @@ accel(%)    |Sets the acceleration of the robot based on a percentage of the max
 */
 String program = "\
 #basic starting program for testing;\
-move(100,200,300);\
+#move(100,200,300);\
 #delay(3000);\
-move(0,50,25);\
-move(300,0,5);\
-move(100,200,300);\
-move(0,0,0);\
+#move(0,50,25);\
+#move(300,50,5);\
+#move(100,200,300);\
+#move(0,0,0);\
 #delay(1000);\
 ;\
 #Section to test speed command;\
-speed(20);\
-move(100,200,300);\
-speed();\
-move(0,0,0);\
+#speed(20);\
+#move(100,200,300);\
+#speed();\
+#move(0,0,0);\
 ;\
 #Section to test accel command;\
 #delay(1000);\
-accel(5);\
-move(100,200,300);\
-accel();\
-move(0,0,0);\
-delay(1000);\
+#accel(5);\
+#move(100,200,300);\
+#accel();\
+#move(0,0,0);\
+#delay(1000);\
 #Rapid section testing individual axis moves;\
 #X;\
+move(200,0,0);\
+delay(1000);\
 move(100,0,0);\
-delay(1000);\
-move(0,0,0);\
 #Y;\
-move(0,100,0);\
+move(100,100,0);\
 delay(1000);\
-move(0,0,0);\
+move(100,0,0);\
 #Z;\
-move(0,0,100);\
+move(100,0,100);\
 delay(1000);\
-move(0,0,0);\
+move(100,0,0);\
 ";
 
 //This takes the program string and splits it into commands per line, putting it into programList
