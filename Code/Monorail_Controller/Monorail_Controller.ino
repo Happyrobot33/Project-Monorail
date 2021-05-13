@@ -18,7 +18,7 @@ int stepper3endstop = 36;
 const int STEPPER_SHIFT_ANGLE = 70; //this is the angle that the stepper mount is shifted by for vertical movement
 const int MAX_SPEED = 400;
 const int MAX_ACCEL = MAX_SPEED * 3;
-const float MM_TO_STEP_RATIO = -0.25; //This is a negative to reverse the direction of all three steppers easily
+const float MM_TO_STEP_RATIO = -0.75; //This is a negative to reverse the direction of all three steppers easily
 const int ZERO_SPEED = 100; //how quickly should we zero the robot for initial position reset
 const int PROGRAM_LINE_COUNT = 100; //whats the maximum ammount of lines the program can be
 String programList[PROGRAM_LINE_COUNT]; //maximum of 100 commands (changeable ofc, dynamic arrays arent a thing I wanted to implement here)
@@ -33,10 +33,11 @@ modify this to add motion moves to the robot
 Comments are available using #. Comments REQUIRE ';\' still as im lazy ;)
 
 List of available commands:
-move(x,y,z) |Moves the robot EOAT to the specified X Y Z coordinates|
-delay(ms)   |Halts program execution for a specified ammount of milliseconds|
-speed(%)    |Sets the speed of the robot based on a percentage of the max speed. This change affects all motion moves after it is called|
-accel(%)    |Sets the acceleration of the robot based on a percentage of the max acceleration. This change affects all motion moves after it is called|
+lmove(x,y,z) |Moves the robot EOAT to the specified X Y Z coordinates in a straight line|
+jmove(x,y,z) |Moves the robot EOAT to the specified X Y Z coordinates as quick as possible|
+delay(ms)    |Halts program execution for a specified ammount of milliseconds|
+speed(%)     |Sets the speed of the robot based on a percentage of the max speed. This change affects all motion moves after it is called|
+accel(%)     |Sets the acceleration of the robot based on a percentage of the max acceleration. This change affects all motion moves after it is called|
 */
 String program = "\
 #basic starting program for testing;\
@@ -63,17 +64,21 @@ String program = "\
 #delay(1000);\
 #Rapid section testing individual axis moves;\
 #X;\
-move(200,0,0);\
+lmove(200,0,0);\
 delay(1000);\
-move(100,0,0);\
+jmove(100,0,0);\
 #Y;\
-move(100,100,0);\
+lmove(100,100,0);\
 delay(1000);\
-move(100,0,0);\
+jmove(100,0,0);\
 #Z;\
-move(100,0,100);\
+lmove(100,0,100);\
 delay(1000);\
-move(100,0,0);\
+jmove(100,0,0);\
+#ALL AXIS;\
+lmove(400,50,200);\
+delay(1000);\
+jmove(100,0,0);\
 ";
 
 //This takes the program string and splits it into commands per line, putting it into programList
@@ -93,13 +98,21 @@ void parseCommand(String command){
     return;
   }
   //Motion Commands
-  else if(command.indexOf("move") != -1){
+  else if(command.indexOf("lmove") != -1){
     //Serial.println(command);
     String valueset = command.substring(command.indexOf("(") + 1, command.indexOf(')'));
     int x = command.substring(command.indexOf("(") + 1, command.indexOf(',')).toInt();
     int y = command.substring(command.indexOf(",") + 1, command.indexOf(',',command.indexOf(",") + 1)).toInt();
     int z = command.substring(command.indexOf(",",command.indexOf(",", command.indexOf(",")) + 1) + 1, command.indexOf(')')).toInt();
-    moveToCoordinates(x,y,z);
+    lmoveToCoordinates(x,y,z);
+  }
+  else if(command.indexOf("jmove") != -1){
+    //Serial.println(command);
+    String valueset = command.substring(command.indexOf("(") + 1, command.indexOf(')'));
+    int x = command.substring(command.indexOf("(") + 1, command.indexOf(',')).toInt();
+    int y = command.substring(command.indexOf(",") + 1, command.indexOf(',',command.indexOf(",") + 1)).toInt();
+    int z = command.substring(command.indexOf(",",command.indexOf(",", command.indexOf(",")) + 1) + 1, command.indexOf(')')).toInt();
+    jmoveToCoordinates(x,y,z);
   }
   else if(command.indexOf("speed()") != -1){
     //Serial.println(command);
@@ -135,7 +148,7 @@ void setup()
     splitProgram();
     //Initial test move
     reZero();
-    moveToCoordinates(0,0,0);
+    jmoveToCoordinates(0,0,0);
 }
 
 void loop()
@@ -167,15 +180,29 @@ void moveToCoordinates(float x, float y, float z){
   stepper1.moveTo((x - z) / MM_TO_STEP_RATIO);
   stepper2.moveTo((x - (y * tan(90 - STEPPER_SHIFT_ANGLE))) / MM_TO_STEP_RATIO);
   stepper3.moveTo((x + z) / MM_TO_STEP_RATIO);
+}
 
-  //Times ive tried to figure out what I did here: 1
-  float MaxDistance = max(stepper1.distanceToGo(), stepper3.distanceToGo());
-
+void lmoveToCoordinates(float x, float y, float z){
+  moveToCoordinates(x,y,z);
+  //abs all of these as this can be negative or positive
+  long s1d = abs(stepper1.distanceToGo());
+  long s2d = abs(stepper2.distanceToGo());
+  long s3d = abs(stepper3.distanceToGo());
+  float MaxDistance = max(s1d, s3d);
+  
   float VectorMultiplier = 1.0f / MaxDistance;
+  if(s1d == 0 && s3d == 0) {VectorMultiplier = 1.0f / s2d;} //account for the fact that if both exterior carriages dont move, we will calc NaN for vector multiplier
 
-  stepper1.setMaxSpeed((VectorMultiplier * stepper1.distanceToGo()) * MAX_SPEED * percentSpeed);
-  stepper2.setMaxSpeed((VectorMultiplier * stepper2.distanceToGo()) * MAX_SPEED * percentSpeed);
-  stepper3.setMaxSpeed((VectorMultiplier * stepper3.distanceToGo()) * MAX_SPEED * percentSpeed);
+  stepper1.setMaxSpeed((VectorMultiplier * s1d) * MAX_SPEED * percentSpeed);
+  stepper2.setMaxSpeed((VectorMultiplier * s2d) * MAX_SPEED * percentSpeed);
+  stepper3.setMaxSpeed((VectorMultiplier * s3d) * MAX_SPEED * percentSpeed);
+}
+
+void jmoveToCoordinates(float x, float y, float z){
+  moveToCoordinates(x,y,z);
+  stepper1.setMaxSpeed(MAX_SPEED * percentSpeed);
+  stepper2.setMaxSpeed(MAX_SPEED * percentSpeed);
+  stepper3.setMaxSpeed(MAX_SPEED * percentSpeed);
 }
 
 void setMotionAccel(int accel){
