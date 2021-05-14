@@ -33,11 +33,13 @@ modify this to add motion moves to the robot
 Comments are available using #. Comments REQUIRE ';\' still as im lazy ;)
 
 List of available commands:
-lmove(x,y,z) |Moves the robot EOAT to the specified X Y Z coordinates in a straight line|
-jmove(x,y,z) |Moves the robot EOAT to the specified X Y Z coordinates as quick as possible|
-delay(ms)    |Halts program execution for a specified ammount of milliseconds|
-speed(%)     |Sets the speed of the robot based on a percentage of the max speed. This change affects all motion moves after it is called|
-accel(%)     |Sets the acceleration of the robot based on a percentage of the max acceleration. This change affects all motion moves after it is called|
+lmove(x,y,z)                       |Moves the robot EOAT to the specified X Y Z coordinates in a straight line|
+jmove(x,y,z)                       |Moves the robot EOAT to the specified X Y Z coordinates as quick as possible|
+delay(ms)                          |Halts program execution for a specified ammount of milliseconds|
+speed(%)                           |Sets the speed of the robot based on a percentage of the max speed. This change affects all motion moves after it is called|
+accel(%)                           |Sets the acceleration of the robot based on a percentage of the max acceleration. This change affects all motion moves after it is called|
+Carc(x,y,z,r,startAngle,endAngle)  |Does a clockwise arc move given a center position, a radius from that center, a start angle and an end angle. always make sure your end angle is larger than your start angle|
+CCarc(x,y,z,r,startAngle,endAngle) |Does a counter-clockwise arc move given a center position, a radius from that center, a start angle and an end angle. always make sure your end angle is larger than your start angle|
 */
 String program = "\
 #basic starting program for testing;\
@@ -79,6 +81,11 @@ jmove(100,0,0);\
 lmove(400,50,200);\
 delay(1000);\
 jmove(100,0,0);\
+#Arc Testing;\
+Carc(200,20,0,10,90,0);\
+delay(1000);\
+CCarc(200,20,0,10,0,90);\
+jmove(100,0,0);\
 ";
 
 //This takes the program string and splits it into commands per line, putting it into programList
@@ -87,6 +94,20 @@ void splitProgram(){
     programList[lastArrayPoint] = program.substring(0, program.indexOf(';'));
     program = program.substring(program.indexOf(';') + 1, program.length());
     lastArrayPoint++;
+  }
+}
+
+void stringToArray(String * ar, String inputStr){
+  int r=0, t=0;
+  
+  for (int i=0; i < inputStr.length(); i++)
+  { 
+   if(inputStr.charAt(i) == ',' || inputStr.charAt(i) == ')') 
+    { 
+      ar[t] = inputStr.substring(r, i); 
+      r=(i+1); 
+      t++;
+    }
   }
 }
 
@@ -100,19 +121,47 @@ void parseCommand(String command){
   //Motion Commands
   else if(command.indexOf("lmove") != -1){
     //Serial.println(command);
-    String valueset = command.substring(command.indexOf("(") + 1, command.indexOf(')'));
-    int x = command.substring(command.indexOf("(") + 1, command.indexOf(',')).toInt();
-    int y = command.substring(command.indexOf(",") + 1, command.indexOf(',',command.indexOf(",") + 1)).toInt();
-    int z = command.substring(command.indexOf(",",command.indexOf(",", command.indexOf(",")) + 1) + 1, command.indexOf(')')).toInt();
+    String valueset = command.substring(command.indexOf("(") + 1);
+    String values[3];
+    stringToArray(values, valueset);
+    int x = values[0].toInt();
+    int y = values[1].toInt();
+    int z = values[2].toInt();
     lmoveToCoordinates(x,y,z);
   }
   else if(command.indexOf("jmove") != -1){
     //Serial.println(command);
-    String valueset = command.substring(command.indexOf("(") + 1, command.indexOf(')'));
-    int x = command.substring(command.indexOf("(") + 1, command.indexOf(',')).toInt();
-    int y = command.substring(command.indexOf(",") + 1, command.indexOf(',',command.indexOf(",") + 1)).toInt();
-    int z = command.substring(command.indexOf(",",command.indexOf(",", command.indexOf(",")) + 1) + 1, command.indexOf(')')).toInt();
+    String valueset = command.substring(command.indexOf("(") + 1);
+    String values[3];
+    stringToArray(values, valueset);
+    int x = values[0].toInt();
+    int y = values[1].toInt();
+    int z = values[2].toInt();
     jmoveToCoordinates(x,y,z);
+  }
+  else if(command.indexOf("Carc") != -1){
+    String valueset = command.substring(command.indexOf("(") + 1);
+    String values[6];
+    stringToArray(values, valueset);
+    int x      = values[0].toInt();
+    int y      = values[1].toInt();
+    int z      = values[2].toInt();
+    int r      = values[3].toInt();
+    int sangle = values[4].toInt();
+    int eangle = values[5].toInt();
+    arcmoveC(x,y,z,r,sangle,eangle);
+  }
+  else if(command.indexOf("CCarc") != -1){
+    String valueset = command.substring(command.indexOf("(") + 1);
+    String values[6];
+    stringToArray(values, valueset);
+    int x      = values[0].toInt();
+    int y      = values[1].toInt();
+    int z      = values[2].toInt();
+    int r      = values[3].toInt();
+    int sangle = values[4].toInt();
+    int eangle = values[5].toInt();
+    arcmoveCC(x,y,z,r,sangle,eangle);
   }
   else if(command.indexOf("speed()") != -1){
     //Serial.println(command);
@@ -120,7 +169,10 @@ void parseCommand(String command){
   }
   else if(command.indexOf("speed") != -1){
     //Serial.println(command);
-    percentSpeed = command.substring(command.indexOf("(") + 1, command.indexOf(')')).toInt() / 100.0;
+    String valueset = command.substring(command.indexOf("(") + 1);
+    String values[1];
+    stringToArray(values, valueset);
+    percentSpeed = values[0].toInt() / 100.0;
   }
   else if(command.indexOf("accel()") != -1){
     //Serial.println(command);
@@ -128,13 +180,19 @@ void parseCommand(String command){
   }
   else if(command.indexOf("accel") != -1){
     //Serial.println(command);
-    setMotionAccel((command.substring(command.indexOf("(") + 1, command.indexOf(')')).toInt() / 100.0) * MAX_ACCEL); //find the value in the command, then divide it by 100 and multiply it by MAX_ACCEL
+    String valueset = command.substring(command.indexOf("(") + 1);
+    String values[1];
+    stringToArray(values, valueset);
+    setMotionAccel((values[0].toInt() / 100.0) * MAX_ACCEL); //find the value in the command, then divide it by 100 and multiply it by MAX_ACCEL
   }
 
   //Time Commands
   if(command.indexOf("delay") != -1){
     //Serial.println(command);
-    delay(command.substring(command.indexOf("(") + 1, command.indexOf(')')).toInt());
+    String valueset = command.substring(command.indexOf("(") + 1);
+    String values[1];
+    stringToArray(values, valueset);
+    delay(values[0].toInt());
   }
 }
 
@@ -203,6 +261,21 @@ void jmoveToCoordinates(float x, float y, float z){
   stepper1.setMaxSpeed(MAX_SPEED * percentSpeed);
   stepper2.setMaxSpeed(MAX_SPEED * percentSpeed);
   stepper3.setMaxSpeed(MAX_SPEED * percentSpeed);
+}
+
+void arcmoveCC(float x, float y, float z, float r, float sAngle, float eAngle){
+  for(int angle = sAngle; angle <= eAngle; angle++){
+    float calcXpos = r * cos(radians(angle)) + x;
+    float calcYpos = r * sin(radians(angle)) + y;
+    jmoveToCoordinates(calcXpos, calcYpos, z);
+  }
+}
+void arcmoveC(float x, float y, float z, float r, float sAngle, float eAngle){
+  for(int angle = sAngle; angle >= eAngle; angle--){
+    float calcXpos = r * cos(radians(angle)) + x;
+    float calcYpos = r * sin(radians(angle)) + y;
+    jmoveToCoordinates(calcXpos, calcYpos, z);
+  }
 }
 
 void setMotionAccel(int accel){
