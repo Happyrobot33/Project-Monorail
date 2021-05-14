@@ -66,9 +66,9 @@ String program = "\
 #delay(1000);\
 #Rapid section testing individual axis moves;\
 #X;\
-lmove(200,0,0);\
-delay(1000);\
-jmove(100,0,0);\
+#lmove(200,0,0);\
+#delay(1000);\
+#jmove(100,0,0);\
 #Y;\
 lmove(100,100,0);\
 delay(1000);\
@@ -82,10 +82,10 @@ lmove(400,50,200);\
 delay(1000);\
 jmove(100,0,0);\
 #Arc Testing;\
-Carc(200,20,0,10,90,0);\
-delay(1000);\
-CCarc(200,20,0,10,0,90);\
-jmove(100,0,0);\
+#Carc(200,0,0,50,90,0);\
+#delay(1000);\
+#CCarc(200,0,0,50,0,90);\
+#delay(1000);\
 ";
 
 //This takes the program string and splits it into commands per line, putting it into programList
@@ -139,18 +139,6 @@ void parseCommand(String command){
     int z = values[2].toInt();
     jmoveToCoordinates(x,y,z);
   }
-  else if(command.indexOf("Carc") != -1){
-    String valueset = command.substring(command.indexOf("(") + 1);
-    String values[6];
-    stringToArray(values, valueset);
-    int x      = values[0].toInt();
-    int y      = values[1].toInt();
-    int z      = values[2].toInt();
-    int r      = values[3].toInt();
-    int sangle = values[4].toInt();
-    int eangle = values[5].toInt();
-    arcmoveC(x,y,z,r,sangle,eangle);
-  }
   else if(command.indexOf("CCarc") != -1){
     String valueset = command.substring(command.indexOf("(") + 1);
     String values[6];
@@ -162,6 +150,18 @@ void parseCommand(String command){
     int sangle = values[4].toInt();
     int eangle = values[5].toInt();
     arcmoveCC(x,y,z,r,sangle,eangle);
+  }
+  else if(command.indexOf("Carc") != -1){
+    String valueset = command.substring(command.indexOf("(") + 1);
+    String values[6];
+    stringToArray(values, valueset);
+    int x      = values[0].toInt();
+    int y      = values[1].toInt();
+    int z      = values[2].toInt();
+    int r      = values[3].toInt();
+    int sangle = values[4].toInt();
+    int eangle = values[5].toInt();
+    arcmoveC(x,y,z,r,sangle,eangle);
   }
   else if(command.indexOf("speed()") != -1){
     //Serial.println(command);
@@ -264,17 +264,29 @@ void jmoveToCoordinates(float x, float y, float z){
 }
 
 void arcmoveCC(float x, float y, float z, float r, float sAngle, float eAngle){
-  for(int angle = sAngle; angle <= eAngle; angle++){
-    float calcXpos = r * cos(radians(angle)) + x;
-    float calcYpos = r * sin(radians(angle)) + y;
+  for(int angle = sAngle; angle < eAngle; angle += 1){
+    float calcXpos = (r * cos(radians(angle))) + x;
+    float calcYpos = (r * sin(radians(angle))) + y;
     jmoveToCoordinates(calcXpos, calcYpos, z);
+    while(stepper1.distanceToGo() != 0 && stepper2.distanceToGo() != 0 && stepper3.distanceToGo() != 0){
+      stepper1.run();
+      stepper2.run();
+      stepper3.run();
+    }
+    delay(100);
   }
 }
 void arcmoveC(float x, float y, float z, float r, float sAngle, float eAngle){
-  for(int angle = sAngle; angle >= eAngle; angle--){
-    float calcXpos = r * cos(radians(angle)) + x;
-    float calcYpos = r * sin(radians(angle)) + y;
+  for(int angle = sAngle; angle > eAngle; angle -= 1){
+    float calcXpos = (r * cos(radians(angle))) + x;
+    float calcYpos = (r * sin(radians(angle))) + y;
     jmoveToCoordinates(calcXpos, calcYpos, z);
+    while(stepper1.distanceToGo() != 0 && stepper2.distanceToGo() != 0 && stepper3.distanceToGo() != 0){
+      stepper1.run();
+      stepper2.run();
+      stepper3.run();
+    }
+    delay(100);
   }
 }
 
