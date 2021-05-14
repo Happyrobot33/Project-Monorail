@@ -29,7 +29,6 @@ float percentSpeed = 1.0f;
 void setMotionAccel(int accel = MAX_ACCEL);
 
 /*
-modify this to add motion moves to the robot
 Comments are available using #. Comments REQUIRE ';\' still as im lazy ;)
 
 List of available commands:
@@ -242,7 +241,7 @@ void moveToCoordinates(float x, float y, float z){
 
 void lmoveToCoordinates(float x, float y, float z){
   moveToCoordinates(x,y,z);
-  //abs all of these as this can be negative or positive
+  //abs all of these as we just want the distance, not the direction
   long s1d = abs(stepper1.distanceToGo());
   long s2d = abs(stepper2.distanceToGo());
   long s3d = abs(stepper3.distanceToGo());
