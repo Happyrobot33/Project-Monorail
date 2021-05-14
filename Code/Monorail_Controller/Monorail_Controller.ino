@@ -236,7 +236,7 @@ void moveToCoordinates(float x, float y, float z){
   //z = 580 - z;
   
   stepper1.moveTo((x - z) / MM_TO_STEP_RATIO);
-  stepper2.moveTo((x - (y * tan(90 - STEPPER_SHIFT_ANGLE))) / MM_TO_STEP_RATIO);
+  stepper2.moveTo((x - (y * tan(radians(90 - STEPPER_SHIFT_ANGLE)))) / MM_TO_STEP_RATIO);
   stepper3.moveTo((x + z) / MM_TO_STEP_RATIO);
 }
 
