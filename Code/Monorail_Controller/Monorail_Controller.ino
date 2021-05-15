@@ -44,7 +44,7 @@ CCarc(x,y,z,r,startAngle,endAngle) |Does a counter-clockwise arc move given a ce
 String program = "\
 #basic starting program for testing;\
 jmove(550,200,100);\
-delay(100);\
+delay(1000);\
 jmove(50,50,25);\
 jmove(500,50,5);\
 jmove(200,100,100);\
