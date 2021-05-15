@@ -21,10 +21,11 @@ const int MAX_ACCEL = MAX_SPEED * 3;
 const float MM_TO_STEP_RATIO = -0.75;	//This is a negative to reverse the direction of all three steppers easily
 const int ZERO_SPEED = 100;	//how quickly should we zero the robot for initial position reset
 const int PROGRAM_LINE_COUNT = 100;	//whats the maximum ammount of lines the program can be
+const float ARCSPEED = 0.25; //how quickly to move during an arc command
 String programList[PROGRAM_LINE_COUNT];	//maximum of 100 commands (changeable ofc, dynamic arrays arent a thing I wanted to implement here)
 int lastArrayPoint = 0;	//used to know where we are in the listed program
 int programCounter = 0;	//used to count what line we are on in the program
-float percentSpeed = 1.0 f;
+float percentSpeed = 1.0;
 
 void setMotionAccel(int accel = MAX_ACCEL);
 
@@ -42,32 +43,32 @@ CCarc(x,y,z,r,startAngle,endAngle) |Does a counter-clockwise arc move given a ce
 */
 String program = "\
 #basic starting program for testing;\
-#move(100,200,300);\
-#delay(3000);\
-#move(0,50,25);\
-#move(300,50,5);\
-#move(100,200,300);\
-#move(0,0,0);\
-#delay(1000);\
+jmove(550,200,100);\
+delay(100);\
+jmove(50,50,25);\
+jmove(500,50,5);\
+jmove(200,100,100);\
+jmove(0,0,0);\
+delay(1000);\
 ;\
 #Section to test speed command;\
-#speed(20);\
-#move(100,200,300);\
-#speed();\
-#move(0,0,0);\
+speed(20);\
+lmove(300,200,300);\
+speed();\
+lmove(0,0,0);\
 ;\
 #Section to test accel command;\
-#delay(1000);\
-#accel(5);\
-#move(100,200,300);\
-#accel();\
-#move(0,0,0);\
-#delay(1000);\
+delay(1000);\
+accel(5);\
+lmove(300,200,300);\
+accel();\
+lmove(0,0,0);\
+delay(1000);\
 #Rapid section testing individual axis moves;\
 #X;\
-#lmove(200,0,0);\
-#delay(1000);\
-#jmove(100,0,0);\
+lmove(200,0,0);\
+delay(1000);\
+jmove(100,0,0);\
 #Y;\
 lmove(100,100,0);\
 delay(1000);\
@@ -81,10 +82,10 @@ lmove(400,50,200);\
 delay(1000);\
 jmove(100,0,0);\
 #Arc Testing;\
-#Carc(200,0,0,50,90,0);\
-#delay(1000);\
-#CCarc(200,0,0,50,0,90);\
-#delay(1000);\
+Carc(200,200,0,200,360,0);\
+lmove(0,0,0);\
+CCarc(200,200,0,200,0,360);\
+lmove(0,0,0);\
 ";
 
 //This takes the program string and splits it into commands per line, putting it into programList
@@ -266,8 +267,8 @@ void lmoveToCoordinates(float x, float y, float z)
 	long s3d = abs(stepper3.distanceToGo());
 	float MaxDistance = max(s1d, s3d);
 
-	float VectorMultiplier = 1.0 f / MaxDistance;
-	if (s1d == 0 && s3d == 0) { VectorMultiplier = 1.0 f / s2d; }	//account for the fact that if both exterior carriages dont move, we will calc NaN for vector multiplier
+	float VectorMultiplier = 1.0 / MaxDistance;
+	if (s1d == 0 && s3d == 0) { VectorMultiplier = 1.0 / s2d; }	//account for the fact that if both exterior carriages dont move, we will calc NaN for vector multiplier
 
 	stepper1.setMaxSpeed((VectorMultiplier *s1d) *MAX_SPEED *percentSpeed);
 	stepper2.setMaxSpeed((VectorMultiplier *s2d) *MAX_SPEED *percentSpeed);
@@ -284,38 +285,46 @@ void jmoveToCoordinates(float x, float y, float z)
 
 void arcmoveCC(float x, float y, float z, float r, float sAngle, float eAngle)
 {
-	for (int angle = sAngle; angle < eAngle; angle += 1)
+  float calcXpos = (r* cos(radians(sAngle))) + x;
+  float calcYpos = (r* sin(radians(sAngle))) + y;
+  jmoveToCoordinates(calcXpos,calcYpos,z);
+  float prevpercentSpeed = percentSpeed;
+  percentSpeed = ARCSPEED;
+	for (int angle = sAngle; angle < eAngle; angle += 15)
 	{
-		float calcXpos = (r* cos(radians(angle))) + x;
-		float calcYpos = (r* sin(radians(angle))) + y;
-		jmoveToCoordinates(calcXpos, calcYpos, z);
+		calcXpos = (r* cos(radians(angle))) + x;
+		calcYpos = (r* sin(radians(angle))) + y;
+		lmoveToCoordinates(calcXpos, calcYpos, z);
 		while (stepper1.distanceToGo() != 0 && stepper2.distanceToGo() != 0 && stepper3.distanceToGo() != 0)
 		{
 			stepper1.run();
 			stepper2.run();
 			stepper3.run();
 		}
-
-		delay(100);
 	}
+ percentSpeed = prevpercentSpeed;
 }
 
 void arcmoveC(float x, float y, float z, float r, float sAngle, float eAngle)
 {
-	for (int angle = sAngle; angle > eAngle; angle -= 1)
+  float calcXpos = (r* cos(radians(sAngle))) + x;
+  float calcYpos = (r* sin(radians(sAngle))) + y;
+  jmoveToCoordinates(calcXpos,calcYpos,z);
+  float prevpercentSpeed = percentSpeed;
+  percentSpeed = ARCSPEED;
+	for (int angle = sAngle; angle > eAngle; angle -= 15)
 	{
-		float calcXpos = (r* cos(radians(angle))) + x;
-		float calcYpos = (r* sin(radians(angle))) + y;
-		jmoveToCoordinates(calcXpos, calcYpos, z);
+		calcXpos = (r* cos(radians(angle))) + x;
+		calcYpos = (r* sin(radians(angle))) + y;
+		lmoveToCoordinates(calcXpos, calcYpos, z);
 		while (stepper1.distanceToGo() != 0 && stepper2.distanceToGo() != 0 && stepper3.distanceToGo() != 0)
 		{
 			stepper1.run();
 			stepper2.run();
 			stepper3.run();
 		}
-
-		delay(100);
 	}
+ percentSpeed = prevpercentSpeed;
 }
 
 void setMotionAccel(int accel)
