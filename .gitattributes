@@ -1,7 +1,7 @@
-*.SLDPRT linguist-language=Part
-*.SLDASM linguist-language=Assem
-Circuits/* linguist-language=Eagle
-STL/* linguist-language=STL
+*.SLDPRT linguist-vendored
+*.SLDASM linguist-vendored
+Circuits/* linguist-vendored
+STL/* linguist-vendored
 
 * linguist-detectable
 # Documents
