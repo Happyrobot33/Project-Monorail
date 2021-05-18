@@ -1,5 +1,5 @@
-*.SLDPRT linguist-vendored
-*.SLDASM linguist-vendored
+Purchased/* linguist-vendored
+CAD/* linguist-vendored
 Circuits/* linguist-vendored
 STL/* linguist-vendored
 
