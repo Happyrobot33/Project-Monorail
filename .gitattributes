@@ -1,8 +1,3 @@
-Purchased/* linguist-vendored
-CAD/* linguist-vendored
-Circuits/* linguist-vendored
-STL/* linguist-vendored
-
 * linguist-detectable
 # Documents
 *.bibtex   text diff=bibtex
@@ -75,3 +70,7 @@ STL/* linguist-vendored
 .gitattributes export-ignore
 .gitignore     export-ignore
 .gitkeep       export-ignore
+Purchased/* linguist-vendored
+CAD/* linguist-vendored
+Circuits/* linguist-vendored
+STL/* linguist-vendored
