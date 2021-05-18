@@ -1,6 +1,6 @@
-*.sldprt linguist-language=SOLIDWORKS Part
-*.sldassm linguist-language=SOLIDWORKS Assem
-Circuits/* linguist-language=Eagle PCB
+*.sldprt linguist-language=Part
+*.sldassm linguist-language=Assem
+Circuits/* linguist-language=Eagle
 STL/* linguist-language=STL
 
 * linguist-detectable
