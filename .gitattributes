@@ -3,7 +3,7 @@
 #Purchased/* linguist-vendored
 #STL/* linguist-vendored
 
-
+* linguist-detectable
 # Documents
 *.bibtex   text diff=bibtex
 *.doc      diff=astextplain
