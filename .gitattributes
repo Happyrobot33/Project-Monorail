@@ -1,5 +1,5 @@
-*.sldprt linguist-language=Part
-*.sldassm linguist-language=Assem
+*.SLDPRT linguist-language=Part
+*.SLDASM linguist-language=Assem
 Circuits/* linguist-language=Eagle
 STL/* linguist-language=STL
 
