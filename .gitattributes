@@ -1,7 +1,7 @@
-#CAD/* linguist-vendored
-#Circuits/* linguist-vendored
-#Purchased/* linguist-vendored
-#STL/* linguist-vendored
+*.sldprt linguist-language=SOLIDWORKS Part
+*.sldassm linguist-language=SOLIDWORKS Assem
+Circuits/* linguist-language=Eagle PCB
+STL/* linguist-language=STL
 
 * linguist-detectable
 # Documents
