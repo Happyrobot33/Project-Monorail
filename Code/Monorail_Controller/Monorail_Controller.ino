@@ -14,12 +14,13 @@ AccelStepper stepper3(AccelStepper::FULL4WIRE, 30, 31, 32, 33);
 int stepper1endstop = 34;
 int stepper2endstop = 35;
 int stepper3endstop = 36;
+int ELECTROMAGNET = 37;
 
 const int STEPPER_SHIFT_ANGLE = 70;	//this is the angle that the stepper mount is shifted by for vertical movement
 const int MAX_SPEED = 400;
 const int MAX_ACCEL = MAX_SPEED * 3;
 const float MM_TO_STEP_RATIO = -5; //-0.75;	//This is a negative to reverse the direction of all three steppers easily
-const int ZERO_SPEED = 100;	//how quickly should we zero the robot for initial position reset
+const int ZERO_SPEED = 20;	//how quickly should we zero the robot for initial position reset
 const int PROGRAM_LINE_COUNT = 100;	//whats the maximum ammount of lines the program can be
 const float ARCSPEED = 0.25; //how quickly to move during an arc command
 String programList[PROGRAM_LINE_COUNT];	//maximum of 100 commands (changeable ofc, dynamic arrays arent a thing I wanted to implement here)
@@ -32,7 +33,7 @@ void setMotionAccel(int accel = MAX_ACCEL);
 /*
 Comments are available using #. Comments REQUIRE ';\' still as im lazy ;)
 
-List of available commands:
+List of movement commands:
 lmove(x,y,z)                       |Moves the robot EOAT to the specified X Y Z coordinates in a straight line|
 jmove(x,y,z)                       |Moves the robot EOAT to the specified X Y Z coordinates as quick as possible|
 delay(ms)                          |Halts program execution for a specified ammount of milliseconds|
@@ -40,6 +41,9 @@ speed(%)                           |Sets the speed of the robot based on a perce
 accel(%)                           |Sets the acceleration of the robot based on a percentage of the max acceleration. This change affects all motion moves after it is called|
 Carc(x,y,z,r,startAngle,endAngle)  |Does a clockwise arc move given a center position, a radius from that center, a start angle and an end angle. always make sure your end angle is larger than your start angle|
 CCarc(x,y,z,r,startAngle,endAngle) |Does a counter-clockwise arc move given a center position, a radius from that center, a start angle and an end angle. always make sure your end angle is larger than your start angle|
+
+List of EOAT commands:
+EOAT(T/F)                          |Turns on or off the EOAT, 0 for off and 1 for on|
 */
 String program = "\
 #basic starting program for testing;\
@@ -50,12 +54,14 @@ jmove(500,50,5);\
 jmove(200,100,100);\
 jmove(0,0,0);\
 delay(1000);\
+EOAT(1);\
 ;\
 #Section to test speed command;\
 speed(20);\
 lmove(300,200,300);\
 speed();\
 lmove(0,0,0);\
+EOAT(0);\
 ;\
 #Section to test accel command;\
 delay(1000);\
@@ -64,6 +70,7 @@ lmove(300,200,300);\
 accel();\
 lmove(0,0,0);\
 delay(1000);\
+EOAT(1);\
 #Rapid section testing individual axis moves;\
 #X;\
 lmove(200,0,0);\
@@ -86,6 +93,7 @@ Carc(200,200,0,200,360,0);\
 lmove(0,0,0);\
 CCarc(200,200,0,200,0,360);\
 lmove(0,0,0);\
+EOAT(0);\
 ";
 
 //This takes the program string and splits it into commands per line, putting it into programList
@@ -209,6 +217,15 @@ void parseCommand(String command)
 		stringToArray(values, valueset);
 		delay(values[0].toInt());
 	}
+
+  //EOAT Commands
+  if (command.indexOf("EOAT") != -1)
+  {
+    String valueset = command.substring(command.indexOf("(") + 1);
+    String values[1];
+    stringToArray(values, valueset);
+    energizeMagnet(values[0].toInt());
+  }
 }
 
 void setup()
@@ -216,6 +233,7 @@ void setup()
 	pinMode(stepper1endstop, INPUT);
 	pinMode(stepper2endstop, INPUT);
 	pinMode(stepper3endstop, INPUT);
+  pinMode(ELECTROMAGNET, OUTPUT); //Set electromagnet pin to output
 	setMotionAccel();
 	//Serial.begin(9600);
 	splitProgram();
@@ -230,6 +248,7 @@ void loop()
 	stepper2.run();
 	stepper3.run();
 
+ 
 	//if we have reached the position we are trying to move to, we have finished a line and should move to the next line in the program
 	if (stepper1.distanceToGo() == 0 && stepper2.distanceToGo() == 0 && stepper3.distanceToGo() == 0)
 	{
@@ -324,7 +343,7 @@ void arcmoveC(float x, float y, float z, float r, float sAngle, float eAngle)
 			stepper3.run();
 		}
 	}
- percentSpeed = prevpercentSpeed;
+	percentSpeed = prevpercentSpeed;
 }
 
 void setMotionAccel(int accel)
@@ -334,26 +353,53 @@ void setMotionAccel(int accel)
 	stepper3.setAcceleration(accel);
 }
 
+void energizeMagnet(int control)
+{
+  switch(control){
+    case 0:
+    {
+      digitalWrite(ELECTROMAGNET, LOW); //Disable the Electromagnet
+      break;
+    }
+    case 1:
+    {
+      digitalWrite(ELECTROMAGNET, HIGH); //Enable the Electromagnet
+      break;
+    }
+  }
+}
+
 void reZero()
 {
+  //set the speed of the motors to a slow accurate speed for initial hardware zeroing
 	stepper1.setSpeed(ZERO_SPEED);
 	stepper2.setSpeed(ZERO_SPEED);
 	stepper3.setSpeed(ZERO_SPEED);
+
+  //Keep running till all three endstops are triggered
 	while (digitalRead(stepper1endstop) == LOW || digitalRead(stepper2endstop) == LOW || digitalRead(stepper3endstop) == LOW)
 	{
 		if (digitalRead(stepper1endstop) == LOW)
 		{
-			stepper1.runSpeed();
+      stepper1.move(1);
+			stepper1.runSpeedToPosition();
 		}
 
 		if (digitalRead(stepper2endstop) == LOW)
 		{
-			stepper2.runSpeed();
+      stepper2.move(1);
+			stepper2.runSpeedToPosition();
 		}
 
 		if (digitalRead(stepper3endstop) == LOW)
 		{
+      stepper3.move(1);
 			stepper3.runSpeed();
 		}
 	}
+
+  //Register the current position of the steppers as the new zero
+  stepper1.setCurrentPosition(0);
+  stepper2.setCurrentPosition(0);
+  stepper3.setCurrentPosition(0);
 }
