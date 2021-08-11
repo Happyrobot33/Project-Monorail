@@ -19,7 +19,7 @@ int ELECTROMAGNET = 37;
 const int STEPPER_SHIFT_ANGLE = 70;	//this is the angle that the stepper mount is shifted by for vertical movement
 const int MAX_SPEED = 400;
 const int MAX_ACCEL = MAX_SPEED * 3;
-const float MM_TO_STEP_RATIO = -5; //-0.75;	//This is a negative to reverse the direction of all three steppers easily
+const float MM_TO_STEP_RATIO = 4; //-0.75;	//This controls the ratio of steps to MM's
 const int ZERO_SPEED = 20;	//how quickly should we zero the robot for initial position reset
 const int PROGRAM_LINE_COUNT = 100;	//whats the maximum ammount of lines the program can be
 const float ARCSPEED = 0.25; //how quickly to move during an arc command
@@ -89,9 +89,9 @@ lmove(400,50,200);\
 delay(1000);\
 jmove(100,0,0);\
 #Arc Testing;\
-Carc(200,200,0,200,360,0);\
+Carc(400,200,0,200,360,0);\
 lmove(0,0,0);\
-CCarc(200,200,0,200,0,360);\
+CCarc(400,200,0,200,0,360);\
 lmove(0,0,0);\
 EOAT(0);\
 ";
@@ -272,9 +272,20 @@ void moveToCoordinates(float x, float y, float z)
 	//y = y + 180;
 	//z = 580 - z;
 
-	stepper1.moveTo((x - z) / MM_TO_STEP_RATIO);
-	stepper2.moveTo((x - (y* tan(radians(90 - STEPPER_SHIFT_ANGLE)))) / MM_TO_STEP_RATIO);
-	stepper3.moveTo((x + z) / MM_TO_STEP_RATIO);
+  float stepper1calc = (x - z) / MM_TO_STEP_RATIO;
+  float stepper2calc = (x - (y* tan(radians(90 - STEPPER_SHIFT_ANGLE)))) / MM_TO_STEP_RATIO;
+  float stepper3calc = (x + z) / MM_TO_STEP_RATIO;
+
+  //if any of the calculated stepper positions return a negative stepper location, error out
+  if (stepper1calc < 0 || stepper2calc < 0 || stepper3calc < 0) {
+    while (true){
+      //infinite loop
+    }
+  }
+
+	stepper1.moveTo(stepper1calc);
+	stepper2.moveTo(stepper2calc);
+	stepper3.moveTo(stepper3calc);
 }
 
 void lmoveToCoordinates(float x, float y, float z)
@@ -381,25 +392,26 @@ void reZero()
 	{
 		if (digitalRead(stepper1endstop) == LOW)
 		{
-      stepper1.move(1);
+      stepper1.move(-1);
 			stepper1.runSpeedToPosition();
 		}
 
 		if (digitalRead(stepper2endstop) == LOW)
 		{
-      stepper2.move(1);
+      stepper2.move(-1);
 			stepper2.runSpeedToPosition();
 		}
 
 		if (digitalRead(stepper3endstop) == LOW)
 		{
-      stepper3.move(1);
+      stepper3.move(-1);
 			stepper3.runSpeed();
 		}
 	}
 
+  int offset = -20;
   //Register the current position of the steppers as the new zero
-  stepper1.setCurrentPosition(0);
-  stepper2.setCurrentPosition(0);
-  stepper3.setCurrentPosition(0);
+  stepper1.setCurrentPosition(offset);
+  stepper2.setCurrentPosition(offset);
+  stepper3.setCurrentPosition(offset);
 }
