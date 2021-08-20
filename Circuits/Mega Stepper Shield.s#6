@@ -2689,7 +2689,7 @@ Added bigger pads to the TO-92 package</description>
 </class>
 <class number="1" name="Power" width="0.762" drill="0">
 </class>
-<class number="2" name="Stepper Output" width="0.3048" drill="0">
+<class number="2" name="Stepper Output" width="0.508" drill="0">
 </class>
 </classes>
 <parts>
@@ -2840,19 +2840,7 @@ Added bigger pads to the TO-92 package</description>
 <wire x1="91.44" y1="38.1" x2="86.36" y2="38.1" width="0.1524" layer="91"/>
 <junction x="86.36" y="38.1"/>
 <wire x1="86.36" y1="-38.1" x2="86.36" y2="-43.18" width="0.1524" layer="91"/>
-<wire x1="86.36" y1="-43.18" x2="142.24" y2="-43.18" width="0.1524" layer="91"/>
 <junction x="86.36" y="-38.1"/>
-<pinref part="3-STOP" gate="G$1" pin="2"/>
-<wire x1="142.24" y1="-43.18" x2="142.24" y2="-38.1" width="0.1524" layer="91"/>
-<wire x1="142.24" y1="-43.18" x2="162.56" y2="-43.18" width="0.1524" layer="91"/>
-<wire x1="162.56" y1="-43.18" x2="162.56" y2="-7.62" width="0.1524" layer="91"/>
-<junction x="142.24" y="-43.18"/>
-<pinref part="2-STOP" gate="G$1" pin="2"/>
-<wire x1="162.56" y1="-7.62" x2="142.24" y2="-7.62" width="0.1524" layer="91"/>
-<pinref part="1-STOP" gate="G$1" pin="2"/>
-<wire x1="162.56" y1="-7.62" x2="162.56" y2="22.86" width="0.1524" layer="91"/>
-<wire x1="162.56" y1="22.86" x2="142.24" y2="22.86" width="0.1524" layer="91"/>
-<junction x="162.56" y="-7.62"/>
 </segment>
 </net>
 <net name="AIN2" class="0">
@@ -2947,6 +2935,20 @@ Added bigger pads to the TO-92 package</description>
 <wire x1="-53.34" y1="-38.1" x2="-53.34" y2="-40.64" width="0.1524" layer="91"/>
 <wire x1="-53.34" y1="-40.64" x2="-30.48" y2="-40.64" width="0.1524" layer="91"/>
 <label x="-38.1" y="-63.5" size="1.778" layer="95"/>
+<pinref part="1-STOP" gate="G$1" pin="2"/>
+<wire x1="162.56" y1="22.86" x2="142.24" y2="22.86" width="0.1524" layer="91"/>
+<pinref part="2-STOP" gate="G$1" pin="2"/>
+<wire x1="162.56" y1="-7.62" x2="142.24" y2="-7.62" width="0.1524" layer="91"/>
+<wire x1="162.56" y1="-7.62" x2="162.56" y2="22.86" width="0.1524" layer="91"/>
+<junction x="162.56" y="-7.62"/>
+<wire x1="162.56" y1="-43.18" x2="162.56" y2="-7.62" width="0.1524" layer="91"/>
+<pinref part="3-STOP" gate="G$1" pin="2"/>
+<wire x1="142.24" y1="-43.18" x2="142.24" y2="-38.1" width="0.1524" layer="91"/>
+<wire x1="142.24" y1="-43.18" x2="162.56" y2="-43.18" width="0.1524" layer="91"/>
+<wire x1="-30.48" y1="-63.5" x2="162.56" y2="-63.5" width="0.1524" layer="91"/>
+<wire x1="162.56" y1="-63.5" x2="162.56" y2="-43.18" width="0.1524" layer="91"/>
+<junction x="-30.48" y="-63.5"/>
+<junction x="162.56" y="-43.18"/>
 </segment>
 </net>
 <net name="N$13" class="0">

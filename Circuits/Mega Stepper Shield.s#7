@@ -2840,19 +2840,7 @@ Added bigger pads to the TO-92 package</description>
 <wire x1="91.44" y1="38.1" x2="86.36" y2="38.1" width="0.1524" layer="91"/>
 <junction x="86.36" y="38.1"/>
 <wire x1="86.36" y1="-38.1" x2="86.36" y2="-43.18" width="0.1524" layer="91"/>
-<wire x1="86.36" y1="-43.18" x2="142.24" y2="-43.18" width="0.1524" layer="91"/>
 <junction x="86.36" y="-38.1"/>
-<pinref part="3-STOP" gate="G$1" pin="2"/>
-<wire x1="142.24" y1="-43.18" x2="142.24" y2="-38.1" width="0.1524" layer="91"/>
-<wire x1="142.24" y1="-43.18" x2="162.56" y2="-43.18" width="0.1524" layer="91"/>
-<wire x1="162.56" y1="-43.18" x2="162.56" y2="-7.62" width="0.1524" layer="91"/>
-<junction x="142.24" y="-43.18"/>
-<pinref part="2-STOP" gate="G$1" pin="2"/>
-<wire x1="162.56" y1="-7.62" x2="142.24" y2="-7.62" width="0.1524" layer="91"/>
-<pinref part="1-STOP" gate="G$1" pin="2"/>
-<wire x1="162.56" y1="-7.62" x2="162.56" y2="22.86" width="0.1524" layer="91"/>
-<wire x1="162.56" y1="22.86" x2="142.24" y2="22.86" width="0.1524" layer="91"/>
-<junction x="162.56" y="-7.62"/>
 </segment>
 </net>
 <net name="AIN2" class="0">
@@ -2860,7 +2848,8 @@ Added bigger pads to the TO-92 package</description>
 <pinref part="STEPPER-1-CON" gate="G$1" pin="AIN2"/>
 <wire x1="45.72" y1="20.32" x2="45.72" y2="25.4" width="0.1524" layer="91"/>
 <wire x1="45.72" y1="25.4" x2="91.44" y2="25.4" width="0.1524" layer="91"/>
-<wire x1="17.9324" y1="20.32" x2="45.72" y2="20.32" width="0.1524" layer="91"/>
+<pinref part="B1" gate="G$1" pin="25"/>
+<wire x1="17.78" y1="20.32" x2="45.72" y2="20.32" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="AIN1" class="0">
@@ -2868,7 +2857,8 @@ Added bigger pads to the TO-92 package</description>
 <pinref part="STEPPER-1-CON" gate="G$1" pin="AIN1"/>
 <wire x1="91.44" y1="27.94" x2="43.18" y2="27.94" width="0.1524" layer="91"/>
 <wire x1="43.18" y1="27.94" x2="43.18" y2="22.86" width="0.1524" layer="91"/>
-<wire x1="43.18" y1="22.86" x2="17.9324" y2="22.86" width="0.1524" layer="91"/>
+<pinref part="B1" gate="G$1" pin="24"/>
+<wire x1="43.18" y1="22.86" x2="17.78" y2="22.86" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="BIN2" class="0">
@@ -2876,7 +2866,8 @@ Added bigger pads to the TO-92 package</description>
 <pinref part="STEPPER-1-CON" gate="G$1" pin="BIN2"/>
 <wire x1="91.44" y1="35.56" x2="38.1" y2="35.56" width="0.1524" layer="91"/>
 <wire x1="38.1" y1="35.56" x2="38.1" y2="27.94" width="0.1524" layer="91"/>
-<wire x1="38.1" y1="27.94" x2="17.9324" y2="27.94" width="0.1524" layer="91"/>
+<pinref part="B1" gate="G$1" pin="22"/>
+<wire x1="38.1" y1="27.94" x2="17.78" y2="27.94" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$4" class="0">
@@ -2884,7 +2875,8 @@ Added bigger pads to the TO-92 package</description>
 <pinref part="STEPPER-2-CON" gate="G$1" pin="BIN2"/>
 <wire x1="91.44" y1="5.08" x2="45.72" y2="5.08" width="0.1524" layer="91"/>
 <wire x1="45.72" y1="5.08" x2="45.72" y2="17.78" width="0.1524" layer="91"/>
-<wire x1="45.72" y1="17.78" x2="17.9324" y2="17.78" width="0.1524" layer="91"/>
+<pinref part="B1" gate="G$1" pin="26"/>
+<wire x1="45.72" y1="17.78" x2="17.78" y2="17.78" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$5" class="0">
@@ -2892,7 +2884,8 @@ Added bigger pads to the TO-92 package</description>
 <pinref part="STEPPER-2-CON" gate="G$1" pin="BIN1"/>
 <wire x1="43.18" y1="15.24" x2="43.18" y2="2.54" width="0.1524" layer="91"/>
 <wire x1="43.18" y1="2.54" x2="91.44" y2="2.54" width="0.1524" layer="91"/>
-<wire x1="17.9324" y1="15.24" x2="43.18" y2="15.24" width="0.1524" layer="91"/>
+<pinref part="B1" gate="G$1" pin="27"/>
+<wire x1="17.78" y1="15.24" x2="43.18" y2="15.24" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$6" class="0">
@@ -2900,7 +2893,8 @@ Added bigger pads to the TO-92 package</description>
 <pinref part="STEPPER-2-CON" gate="G$1" pin="AIN1"/>
 <wire x1="91.44" y1="-2.54" x2="40.64" y2="-2.54" width="0.1524" layer="91"/>
 <wire x1="40.64" y1="-2.54" x2="40.64" y2="12.7" width="0.1524" layer="91"/>
-<wire x1="40.64" y1="12.7" x2="17.9324" y2="12.7" width="0.1524" layer="91"/>
+<pinref part="B1" gate="G$1" pin="28"/>
+<wire x1="40.64" y1="12.7" x2="17.78" y2="12.7" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$7" class="0">
@@ -2908,7 +2902,8 @@ Added bigger pads to the TO-92 package</description>
 <pinref part="STEPPER-2-CON" gate="G$1" pin="AIN2"/>
 <wire x1="38.1" y1="10.16" x2="38.1" y2="-5.08" width="0.1524" layer="91"/>
 <wire x1="38.1" y1="-5.08" x2="91.44" y2="-5.08" width="0.1524" layer="91"/>
-<wire x1="17.9324" y1="10.16" x2="38.1" y2="10.16" width="0.1524" layer="91"/>
+<pinref part="B1" gate="G$1" pin="29"/>
+<wire x1="17.78" y1="10.16" x2="38.1" y2="10.16" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="GND" class="1">
@@ -2940,6 +2935,20 @@ Added bigger pads to the TO-92 package</description>
 <wire x1="-53.34" y1="-38.1" x2="-53.34" y2="-40.64" width="0.1524" layer="91"/>
 <wire x1="-53.34" y1="-40.64" x2="-30.48" y2="-40.64" width="0.1524" layer="91"/>
 <label x="-38.1" y="-63.5" size="1.778" layer="95"/>
+<pinref part="1-STOP" gate="G$1" pin="2"/>
+<wire x1="162.56" y1="22.86" x2="142.24" y2="22.86" width="0.1524" layer="91"/>
+<pinref part="2-STOP" gate="G$1" pin="2"/>
+<wire x1="162.56" y1="-7.62" x2="142.24" y2="-7.62" width="0.1524" layer="91"/>
+<wire x1="162.56" y1="-7.62" x2="162.56" y2="22.86" width="0.1524" layer="91"/>
+<junction x="162.56" y="-7.62"/>
+<wire x1="162.56" y1="-43.18" x2="162.56" y2="-7.62" width="0.1524" layer="91"/>
+<pinref part="3-STOP" gate="G$1" pin="2"/>
+<wire x1="142.24" y1="-43.18" x2="142.24" y2="-38.1" width="0.1524" layer="91"/>
+<wire x1="142.24" y1="-43.18" x2="162.56" y2="-43.18" width="0.1524" layer="91"/>
+<wire x1="-30.48" y1="-63.5" x2="162.56" y2="-63.5" width="0.1524" layer="91"/>
+<wire x1="162.56" y1="-63.5" x2="162.56" y2="-43.18" width="0.1524" layer="91"/>
+<junction x="-30.48" y="-63.5"/>
+<junction x="162.56" y="-43.18"/>
 </segment>
 </net>
 <net name="N$13" class="0">
@@ -2964,7 +2973,8 @@ Added bigger pads to the TO-92 package</description>
 <pinref part="STEPPER-1-CON" gate="G$1" pin="BIN1"/>
 <wire x1="40.64" y1="25.4" x2="40.64" y2="33.02" width="0.1524" layer="91"/>
 <wire x1="40.64" y1="33.02" x2="91.44" y2="33.02" width="0.1524" layer="91"/>
-<wire x1="17.9324" y1="25.4" x2="40.64" y2="25.4" width="0.1524" layer="91"/>
+<pinref part="B1" gate="G$1" pin="23"/>
+<wire x1="17.78" y1="25.4" x2="40.64" y2="25.4" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$3" class="0">
@@ -2972,7 +2982,8 @@ Added bigger pads to the TO-92 package</description>
 <pinref part="STEPPER-3-CON" gate="G$1" pin="BIN2"/>
 <wire x1="91.44" y1="-25.4" x2="35.56" y2="-25.4" width="0.1524" layer="91"/>
 <wire x1="35.56" y1="-25.4" x2="35.56" y2="7.62" width="0.1524" layer="91"/>
-<wire x1="35.56" y1="7.62" x2="17.9324" y2="7.62" width="0.1524" layer="91"/>
+<pinref part="B1" gate="G$1" pin="30"/>
+<wire x1="35.56" y1="7.62" x2="17.78" y2="7.62" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$8" class="0">
@@ -2980,7 +2991,8 @@ Added bigger pads to the TO-92 package</description>
 <wire x1="33.02" y1="5.08" x2="33.02" y2="-27.94" width="0.1524" layer="91"/>
 <pinref part="STEPPER-3-CON" gate="G$1" pin="BIN1"/>
 <wire x1="33.02" y1="-27.94" x2="91.44" y2="-27.94" width="0.1524" layer="91"/>
-<wire x1="17.9324" y1="5.08" x2="33.02" y2="5.08" width="0.1524" layer="91"/>
+<pinref part="B1" gate="G$1" pin="31"/>
+<wire x1="17.78" y1="5.08" x2="33.02" y2="5.08" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$9" class="0">
@@ -2988,7 +3000,8 @@ Added bigger pads to the TO-92 package</description>
 <pinref part="STEPPER-3-CON" gate="G$1" pin="AIN1"/>
 <wire x1="91.44" y1="-33.02" x2="30.48" y2="-33.02" width="0.1524" layer="91"/>
 <wire x1="30.48" y1="-33.02" x2="30.48" y2="2.54" width="0.1524" layer="91"/>
-<wire x1="30.48" y1="2.54" x2="17.9324" y2="2.54" width="0.1524" layer="91"/>
+<pinref part="B1" gate="G$1" pin="32"/>
+<wire x1="30.48" y1="2.54" x2="17.78" y2="2.54" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$10" class="0">
@@ -2996,7 +3009,8 @@ Added bigger pads to the TO-92 package</description>
 <wire x1="27.94" y1="0" x2="27.94" y2="-35.56" width="0.1524" layer="91"/>
 <pinref part="STEPPER-3-CON" gate="G$1" pin="AIN2"/>
 <wire x1="27.94" y1="-35.56" x2="91.44" y2="-35.56" width="0.1524" layer="91"/>
-<wire x1="17.9324" y1="0" x2="27.94" y2="0" width="0.1524" layer="91"/>
+<pinref part="B1" gate="G$1" pin="33"/>
+<wire x1="17.78" y1="0" x2="27.94" y2="0" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="5V10A" class="1">
@@ -3024,7 +3038,8 @@ Added bigger pads to the TO-92 package</description>
 <wire x1="66.04" y1="-55.88" x2="66.04" y2="-43.18" width="0.1524" layer="91"/>
 <wire x1="66.04" y1="-43.18" x2="20.32" y2="-43.18" width="0.1524" layer="91"/>
 <wire x1="20.32" y1="-43.18" x2="20.32" y2="-7.62" width="0.1524" layer="91"/>
-<wire x1="20.32" y1="-7.62" x2="17.9324" y2="-7.62" width="0.1524" layer="91"/>
+<pinref part="B1" gate="G$1" pin="36"/>
+<wire x1="20.32" y1="-7.62" x2="17.78" y2="-7.62" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$12" class="0">
@@ -3036,7 +3051,8 @@ Added bigger pads to the TO-92 package</description>
 <wire x1="68.58" y1="-53.34" x2="68.58" y2="-40.64" width="0.1524" layer="91"/>
 <wire x1="68.58" y1="-40.64" x2="22.86" y2="-40.64" width="0.1524" layer="91"/>
 <wire x1="22.86" y1="-40.64" x2="22.86" y2="-5.08" width="0.1524" layer="91"/>
-<wire x1="22.86" y1="-5.08" x2="17.9324" y2="-5.08" width="0.1524" layer="91"/>
+<pinref part="B1" gate="G$1" pin="35"/>
+<wire x1="17.78" y1="-5.08" x2="22.86" y2="-5.08" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$14" class="0">
@@ -3048,7 +3064,8 @@ Added bigger pads to the TO-92 package</description>
 <wire x1="71.12" y1="-50.8" x2="71.12" y2="-38.1" width="0.1524" layer="91"/>
 <wire x1="71.12" y1="-38.1" x2="25.4" y2="-38.1" width="0.1524" layer="91"/>
 <wire x1="25.4" y1="-38.1" x2="25.4" y2="-2.54" width="0.1524" layer="91"/>
-<wire x1="25.4" y1="-2.54" x2="17.9324" y2="-2.54" width="0.1524" layer="91"/>
+<pinref part="B1" gate="G$1" pin="34"/>
+<wire x1="25.4" y1="-2.54" x2="17.78" y2="-2.54" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$15" class="2">

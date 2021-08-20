@@ -2687,9 +2687,9 @@ Added bigger pads to the TO-92 package</description>
 <classes>
 <class number="0" name="Signal" width="0.1778" drill="0">
 </class>
-<class number="1" name="Power" width="0.762" drill="0">
+<class number="1" name="Power" width="1.27" drill="0">
 </class>
-<class number="2" name="Stepper Output" width="0.3048" drill="0">
+<class number="2" name="Stepper Output" width="0.508" drill="0">
 </class>
 </classes>
 <parts>
