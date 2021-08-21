@@ -1,25 +1,27 @@
 EAGLE AutoRouter Statistics:
 
-Job           : C:/Users/Matthew/Documents/EAGLE/projects/Stepper Controller Board/Mega Stepper Shield.brd
+Job           : E:/Storage/Personal/CAD Related/Project-Monorail/Circuits/Mega Stepper Shield.brd
 
-Start at      : 11:05:27 (5/1/2021)
-End at        : 11:05:40 (5/1/2021)
-Elapsed time  : 00:00:12
+Start at      : 00:59:08 (8/21/2021)
+End at        : 00:59:19 (8/21/2021)
+Elapsed time  : 00:00:10
 
-Signals       :    37   RoutingGrid: 6.25 mil  Layers: 2
-Connections   :    58   predefined:  0 ( 0 Vias )
+Signals       :    43   RoutingGrid: 6.25 mil  Layers: 2
+Connections   :    64   predefined:  0 ( 0 Vias )
 
-Router memory :   978000
+Router memory :   1090500
 
-Passname          :    Busses     Route Optimize1 Optimize2 Optimize3 Optimize4
+Job has been interrupted!
 
-Time per pass     :  00:00:00  00:00:03  00:00:02  00:00:03  00:00:02  00:00:02
-Number of Ripups  :         0         0         0         0         0         0
-max. Level        :         0         0         0         0         0         0
-max. Total        :         0         0         0         0         0         0
+Passname          :    Busses     Route Optimize1 Optimize2
 
-Routed            :         2        58        58        58        58        58
-Vias              :         0        90        43        31        30        31
-Resolution        :     3.4 %   100.0 %   100.0 %   100.0 %   100.0 %   100.0 %
+Time per pass     :  00:00:00  00:00:07  00:00:02  00:00:01
+Number of Ripups  :         0         0         0         0
+max. Level        :         0         2         0         0
+max. Total        :         0         1         0         0
+
+Routed            :         2        52        52        52
+Vias              :         0        48        18        16
+Resolution        :     3.1 %    81.3 %    81.3 %    81.3 %
 
 Final             : 
