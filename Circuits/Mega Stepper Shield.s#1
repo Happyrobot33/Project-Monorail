@@ -2352,14 +2352,14 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <rectangle x1="-16.764" y1="-24.384" x2="-16.256" y2="-23.876" layer="51"/>
 </package>
 <package name="NRF24L01RF">
-<pad name="P$1" x="0" y="11.43" drill="0.6" shape="square"/>
-<pad name="P$2" x="2.54" y="11.43" drill="0.6"/>
-<pad name="P$3" x="0" y="8.89" drill="0.6"/>
-<pad name="P$4" x="2.54" y="8.89" drill="0.6"/>
-<pad name="P$5" x="0" y="6.35" drill="0.6"/>
-<pad name="P$6" x="2.54" y="6.35" drill="0.6"/>
-<pad name="P$7" x="0" y="3.81" drill="0.6"/>
-<pad name="P$8" x="2.54" y="3.81" drill="0.6"/>
+<pad name="GND" x="0" y="11.43" drill="1.016" shape="square"/>
+<pad name="VCC" x="2.54" y="11.43" drill="1.016"/>
+<pad name="CE" x="0" y="8.89" drill="1.016"/>
+<pad name="CSN" x="2.54" y="8.89" drill="1.016"/>
+<pad name="SCK" x="0" y="6.35" drill="1.016"/>
+<pad name="MOSI" x="2.54" y="6.35" drill="1.016"/>
+<pad name="MISO" x="0" y="3.81" drill="1.016"/>
+<pad name="IRQ" x="2.54" y="3.81" drill="1.016"/>
 <wire x1="-1.27" y1="13.97" x2="31.75" y2="13.97" width="0.127" layer="21"/>
 <wire x1="31.75" y1="-1.27" x2="-1.27" y2="-1.27" width="0.127" layer="21"/>
 <wire x1="-1.27" y1="-1.27" x2="-1.27" y2="13.97" width="0.127" layer="21"/>
@@ -2840,14 +2840,14 @@ Arduino Mega R3
 <devices>
 <device name="" package="NRF24L01RF">
 <connects>
-<connect gate="G$1" pin="3.3V" pad="P$2"/>
-<connect gate="G$1" pin="CE" pad="P$3"/>
-<connect gate="G$1" pin="CSN" pad="P$4"/>
-<connect gate="G$1" pin="GND" pad="P$1"/>
-<connect gate="G$1" pin="IRQ" pad="P$8"/>
-<connect gate="G$1" pin="MISO" pad="P$7"/>
-<connect gate="G$1" pin="MOSI" pad="P$6"/>
-<connect gate="G$1" pin="SCK" pad="P$5"/>
+<connect gate="G$1" pin="3.3V" pad="VCC"/>
+<connect gate="G$1" pin="CE" pad="CE"/>
+<connect gate="G$1" pin="CSN" pad="CSN"/>
+<connect gate="G$1" pin="GND" pad="GND"/>
+<connect gate="G$1" pin="IRQ" pad="IRQ"/>
+<connect gate="G$1" pin="MISO" pad="MISO"/>
+<connect gate="G$1" pin="MOSI" pad="MOSI"/>
+<connect gate="G$1" pin="SCK" pad="SCK"/>
 </connects>
 <technologies>
 <technology name=""/>
